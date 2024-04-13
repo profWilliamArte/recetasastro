@@ -1,0 +1,67 @@
+---
+import Layout from "../layout/Layout.astro"
+
+---
+<Layout>
+		<div class="container">
+			<h3 class="text-center py-4" id="titulo">Ingredientes </h3>
+			<div class="row" id="ingredientes">
+               
+			</div>
+		</div>
+	
+</Layout>
+<script>
+    const urlParams = new URLSearchParams(window.location.search);
+	let id = urlParams.get('id') || '';		
+	const API=`https://forkify-api.herokuapp.com/api/get?rId=${id}`;
+	const resp = await fetch(API)
+	const data = await resp.json();
+    const ingredientesEl=document.querySelector("#ingredientes");
+
+
+    cargarIngredientes(); 
+    
+    
+    const res = await fetch("https://libretranslate.com/translate", {
+        method: "POST",
+        body: JSON.stringify({
+            q: 'Pavlova',
+            source: "auto",
+            target: "es",
+            format: "text",
+            api_key: ""
+        }),
+        headers: { "Content-Type": "application/json" }
+    });
+
+console.log(await res.json());
+
+
+
+    function cargarIngredientes(){
+        let ing="";
+        if (data.recipe && data.recipe.ingredients) {
+            data.recipe.ingredients.map((item)=>(
+                ing+=item+"<br/>"
+            ))
+        }
+        let valor=
+        `
+            <div class="row">
+                <div class="col-md-4">
+                    <img src=${data.recipe.image_url} alt="" class="img-fluid img-thumbnail">
+                </div>
+                <div class="col-md-8 text-start lead">
+                    <p><b>${data.recipe.title}</b></p>
+                    <p class="mb-0"><b>Ingredientes</b></p>
+                    <p>${ing}</p>
+                    <a href=${data.recipe.source_url} class="btn btn-outline-dark" target="_blank">Fuente de la Receta</a>
+
+                </div>
+            </div>
+        `
+        ingredientesEl.innerHTML=valor;
+
+    }
+</script>

@@ -1,0 +1,8 @@
+---
+import menu from '../../datos/menus.json';
+---
+{
+      menu && menu.Legumes.map((item)=>(
+        <li><a class="dropdown-item" href=`/?id=${item}` id={item} data-name={item}>{item}</a></li>
+    ))
+}
